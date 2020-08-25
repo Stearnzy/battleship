@@ -26,16 +26,57 @@ class Cell
 
   def fire_upon
     @fired_upon = true
-    if self.empty?
-      @cell_status = "M"
-    # maybe add elsif later to account for shooting on a coordinate that has already been shot at
-    else
-      @cell_status = "H"
+    if empty? == false
+  # When do we use instance variables??
+      ship.hit
     end
   end
 
   def render(boolean = false)
     if boolean == true
-      @cell_status = "S"
+      if fired_upon?
+        if empty?
+          cell_status = "M"
+        else
+          cell_status = "H"
+        end
+      else
+        if empty?
+          cell_status = "."
+        else
+          cell_status = "S"
+        end
+      end
+    else
+      if fired_upon?
+        if empty?
+          cell_status = "M"
+        else
+          cell_status = "H"
+        end
+      else
+        cell_status = "."
+      end
+    end
+  end
+
+  def renderooni(boolean = false)
+    if fired_upon?
+      if empty?
+        cell_status = "M"
+      else
+        cell_status = "H"
+      end
+    else
+      if empty?
+        cell_status = "."
+      else
+        if boolean == true
+          cell_status = "S"
+        else
+          cell_status = "."
+        end
+      end
+    end
   end
 end
