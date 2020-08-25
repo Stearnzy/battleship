@@ -8,7 +8,7 @@ class Cell
   end
 
   def empty?
-    if @ship = nil
+    if @ship == nil
       return true
     elsif @ship != nil
       return false
