@@ -33,37 +33,11 @@ class Cell
   end
 
   def render(boolean = false)
-    if boolean == true
-      if fired_upon?
-        if empty?
-          cell_status = "M"
-        else
-          cell_status = "H"
-        end
-      else
-        if empty?
-          cell_status = "."
-        else
-          cell_status = "S"
-        end
-      end
-    else
-      if fired_upon?
-        if empty?
-          cell_status = "M"
-        else
-          cell_status = "H"
-        end
-      else
-        cell_status = "."
-      end
-    end
-  end
-
-  def renderooni(boolean = false)
     if fired_upon?
       if empty?
         cell_status = "M"
+      elsif ship.sunk?
+        cell_status = "X"
       else
         cell_status = "H"
       end
@@ -73,6 +47,8 @@ class Cell
       else
         if boolean == true
           cell_status = "S"
+        elsif boolean == true && ship.sunk? == true
+          cell_status = "X"
         else
           cell_status = "."
         end
