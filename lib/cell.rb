@@ -1,10 +1,11 @@
 class Cell
-  attr_reader :coordinate, :ship
+  attr_reader :coordinate, :ship, :cell_status
 
   def initialize(coordinate)
     @coordinate = coordinate
     @ship = nil
     @fired_upon = false
+    @cell_status = "."
   end
 
   def empty?
@@ -25,5 +26,16 @@ class Cell
 
   def fire_upon
     @fired_upon = true
+    if self.empty?
+      @cell_status = "M"
+    # maybe add elsif later to account for shooting on a coordinate that has already been shot at
+    else
+      @cell_status = "H"
+    end
+  end
+
+  def render(boolean = false)
+    if boolean == true
+      @cell_status = "S"
   end
 end
