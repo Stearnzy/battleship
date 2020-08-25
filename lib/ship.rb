@@ -8,10 +8,11 @@ class Ship
   end
 
   def sunk?
-    until @health == 0
-      false
+    if @health == 0
+      return true
     else
-      true
+      return false
+    end
   end
 
   def hit
