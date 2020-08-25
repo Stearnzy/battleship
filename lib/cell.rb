@@ -27,7 +27,6 @@ class Cell
   def fire_upon
     @fired_upon = true
     if empty? == false
-  # When do we use instance variables??
       ship.hit
     end
   end
