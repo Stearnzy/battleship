@@ -48,7 +48,7 @@ class CellTest < Minitest::Test
     assert_equal 2, cell.ship.health
   end
 
-  def test_it_can_render
+  def test_it_can_render_a_miss
     cell_1 = Cell.new("B4")
 
     assert_equal ".", cell_1.render
@@ -56,7 +56,9 @@ class CellTest < Minitest::Test
     cell_1.fire_upon
 
     assert_equal "M", cell_1.render
+  end
 
+  def test_it_can_render_a_hit
     cell_2 = Cell.new("C3")
     cruiser = Ship.new("Cruiser", 3)
     cell_2.place_ship(cruiser)
@@ -67,12 +69,28 @@ class CellTest < Minitest::Test
     cell_2.fire_upon
     assert_equal "H", cell_2.render
     assert_equal "H", cell_2.render(true)
+  end
+
+  def test_cell_can_render_sunken_ship
+    cell_2 = Cell.new("C3")
+    cruiser = Ship.new("Cruiser", 3)
+    cell_2.place_ship(cruiser)
+
     refute cruiser.sunk?
 
-    cruiser.hit
-    cruiser.hit
+    assert_equal ".", cell_2.render
+    assert_equal "S", cell_2.render(true)
+    cell_2.fire_upon
+    assert_equal "H", cell_2.render
+    assert_equal "H", cell_2.render(true)
+    refute cruiser.sunk?
+
+    cell_2.fire_upon
+    cell_2.fire_upon
 
     assert cruiser.sunk?
+    assert_equal "X", cell_2.render
+    assert_equal "X", cell_2.render(true)
   end
 
 end
