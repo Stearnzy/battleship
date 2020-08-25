@@ -18,8 +18,6 @@ class CellTest < Minitest::Test
 
     assert_equal "B4", @cell.coordinate
     assert_equal nil, @cell.ship
-    assert_equal true, @cell.empty
-    assert_equal false, @cell.fired_upon
   end
 
   def test_if_it_can_place_ship_into_cell
@@ -42,12 +40,14 @@ class CellTest < Minitest::Test
 
   def test_it_can_be_fired_upon
 
+    @cell.place_ship(@cruiser)
     assert_equal false, @cell.fired_upon?
     assert_equal 3, @cell.ship.health
 
     @cell.fire_upon
 
     assert_equal true, @cell.fired_upon?
+    @cell.ship.hit
     assert_equal 2, @cell.ship.health
   end
 
