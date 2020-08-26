@@ -1,22 +1,16 @@
 require './lib/cell'
 
 class Board
-  attr_reader :coordinates
+  attr_reader :cells
 
   def initialize
     @cell_names = ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4",
     "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"]
-    @coordinates = {}
-  end
-
-  def cells
-    @coordinates = Hash[@cell_names.collect do |name|
-      [name, Cell.new(name)]
-    end]
+    @cells = Hash[@cell_names.collect {|name| [name, Cell.new(name)]}]
   end
 
   def valid_coordinate?(key)
-    if self.coordinates.has_key?(key)
+    if self.cells.has_key?(key)
       return true
     else
       return false
@@ -61,7 +55,8 @@ class Board
   end
 
   def place(ship, coordinates)
-
-
+    coordinates.each do |coordinate|
+      @cells[coordinate].place_ship(ship)
+    end
   end
 end
