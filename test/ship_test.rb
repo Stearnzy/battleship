@@ -24,7 +24,7 @@ class ShipTest < Minitest::Test
 
   def test_ship_starts_floating
     ship = Ship.new("Submarine", 2)
-    refute ship.sunk?
+    assert_equal false, ship.sunk?
   end
 
   def test_ship_can_take_damage
@@ -38,9 +38,9 @@ class ShipTest < Minitest::Test
     assert_equal 3, ship.health
     ship.hit
     assert_equal 2, ship.health
-    refute ship.sunk?
+    assert_equal false, ship.sunk?
     ship.hit
-    refute ship.sunk?
+    assert_equal false, ship.sunk?
     ship.hit
     assert ship.sunk?
   end
