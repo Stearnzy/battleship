@@ -39,8 +39,8 @@ class Board
         end
         if consecutive_numbers.include? numbers
           true
-        # else
-        #   false
+        else
+          false
         end
       elsif numbers.uniq.count == 1
         consecutive_letters = []
@@ -49,11 +49,11 @@ class Board
         end
         if consecutive_letters.include? letters
           true
-        # else
-        #   false
+        else
+          false
         end
-      # else
-      #   false
+      else
+        false
       end
     else
       false
