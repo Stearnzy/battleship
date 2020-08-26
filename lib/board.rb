@@ -13,7 +13,6 @@ class Board
     @coordinates = Hash[@cell_names.collect do |name|
       [name, Cell.new(name)]
     end]
-    # p coordinates
   end
 
   def valid_coordinate?(key)
@@ -22,5 +21,9 @@ class Board
     else
       return false
     end
+  end
+
+  def valid_placement?
+
   end
 end
