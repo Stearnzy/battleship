@@ -31,7 +31,7 @@ class Cell
     end
   end
 
-  def render(boolean = false)
+  def render(player_board = false)
     if fired_upon?
       if empty?
         cell_status = "M"
@@ -44,9 +44,9 @@ class Cell
       if empty?
         cell_status = "."
       else
-        if boolean == true
+        if player_board == true
           cell_status = "S"
-        elsif boolean == true && ship.sunk? == true
+        elsif player_board == true && ship.sunk? == true
           cell_status = "X"
         else
           cell_status = "."
