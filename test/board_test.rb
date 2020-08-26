@@ -48,6 +48,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_does_not_validate_diagonal_coordinates
+    # skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
@@ -57,10 +58,12 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_validate_proper_placement
+    # skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
     assert board.valid_placement?(submarine, ["A1", "A2"])
     assert board.valid_placement?(cruiser, ["B1", "C1", "D1"])
+  end
 end
