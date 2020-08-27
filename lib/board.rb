@@ -18,7 +18,6 @@ class Board
   end
 
   def valid_placement?(ship, coordinate_choices)
-    # do the next 4 lines work til end of project?
     empty_coordinates = coordinate_choices.map do |coordinate|
       @cells[coordinate].empty?
     end
