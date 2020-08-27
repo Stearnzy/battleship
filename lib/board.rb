@@ -69,7 +69,16 @@ class Board
   end
 
   def render(player_board = false)
-    
+    final_string = []
+    final_string << "  1 2 3 4 \n"
+    rows = @cell_names.each_slice(4).to_a
+    rows.each do |individual_row|
+      final_string << ((individual_row[0])[0] + " ")
+      individual_row.each do |cell|
+        final_string << @cells[cell].render(player_board) + " "
+      end
+      final_string << "\n"
+    end
+    final_string.join
   end
-
 end
