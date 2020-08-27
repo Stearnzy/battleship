@@ -24,11 +24,14 @@ class Game
     if @main_menu_response == 'p'
       # computer lays out ships
       player_ship_placement_prompt
-      cruiser_placement_prompt
-      cruiser_validation_check
-      # place cruiser
-      # render board
-      # sub validation check
+      player_cruiser_placement_prompt
+      player_cruiser_validation_check
+      player_place_cruiser
+      player_submarine_placement_prompt
+      player_submarine_validation_check
+      player_place_submarine
+    # add elsif/else
+
     end
   end
 
@@ -45,7 +48,7 @@ class Game
           "The Cruiser is three units long and the Submarine is two units long.\n"
   end
 
-  def cruiser_placement_prompt
+  def player_cruiser_placement_prompt
     puts "  1 2 3 4 \n" +
          "A . . . . \n" +
          "B . . . . \n" +
@@ -55,12 +58,16 @@ class Game
     print "> "
   end
 
-  def cruiser_validation_check
+  def player_submarine_placement_prompt
+    puts "Now enter the squares for the Submarine (2 spaces):"
+  end
+
+  def player_cruiser_validation_check
     loop do
-      @cruiser_placement = gets.chomp
-      @cruiser_placement = @cruiser_placement.split(" ")
-      cruiser = Ship.new("Cruiser", 3)
-      if @player_board.valid_placement?(cruiser, @cruiser_placement)
+      @cruiser_placement_entry = gets.chomp
+      @cruiser_placement = @cruiser_placement_entry.split(" ")
+      @cruiser = Ship.new("Cruiser", 3)
+      if @player_board.valid_placement?(@cruiser, @cruiser_placement)
         break
       else
         puts "Those are invalid coordinates. Please try again:"
@@ -68,17 +75,34 @@ class Game
     end
   end
 
-  def place_cruiser
-
+  def player_submarine_validation_check
+    loop do
+      @submarine_placement_entry = gets.chomp
+      @submarine_placement = @submarine_placement_entry.split(" ")
+      @submarine = Ship.new("Submarine", 2)
+      if @player_board.valid_placement?(@submarine, @submarine_placement)
+        break
+      else
+        puts "Those are invalid coordinates. Please try again:"
+      end
+    end
   end
 
-  def submarine_placement_prompt
-    puts "  1 2 3 4
-          A S S S .
-          B . . . .
-          C . . . .
-          D . . . .
-          Enter the squares for the Submarine (2 spaces):
-          >"
+  def player_place_cruiser
+    @player_board.place(@cruiser, @cruiser_placement)
+    render_player_board
+  end
+
+  def player_place_submarine
+    @player_board.place(@submarine, @submarine_placement)
+    render_player_board
+  end
+
+  def render_player_board
+    print @player_board.render(true)
+  end
+
+  def render_computer_board
+    print @computer_board.render
   end
 end
