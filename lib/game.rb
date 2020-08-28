@@ -7,24 +7,41 @@ class Game
   end
 
   def play
-    main_menu
-    if @main_menu_response == 'p'
-      computer_ship_placement
-      player_ship_placement_prompt
-      player_cruiser_placement_prompt
-      player_cruiser_validation_check
-      player_place_cruiser
-      player_submarine_placement_prompt
-      player_submarine_validation_check
-      player_place_submarine
-    end
+    game_setup
   end
 
-  def main_menu
+  def game_setup
+    main_menu_prompt
+    verify_main_menu_response
+    computer_ship_placement
+    player_ship_placement_prompt
+    player_cruiser_placement_prompt
+    player_cruiser_validation_check
+    player_place_cruiser
+    player_submarine_placement_prompt
+    player_submarine_validation_check
+    player_place_submarine
+  end
+
+  def main_menu_prompt
     puts  "Welcome to BATTLESHIP\n" +
           "Enter p to play. Enter q to quit.\n"
     print "> "
-    @main_menu_response = gets.chomp.downcase
+  end
+
+  def verify_main_menu_response
+    loop do
+      @main_menu_response = gets.chomp.downcase
+      if @main_menu_response == 'p'
+        break
+      elsif @main_menu_response == 'q'
+        # quit - how do we do this?
+      else
+        puts "Sorry, #{@main_menu_response} is not a valid command.\n" +
+             "Try typing p or q!" +
+             "> "
+      end
+    end
   end
 
   def player_ship_placement_prompt
@@ -95,11 +112,11 @@ class Game
     @comp_cruiser = Ship.new("Cruiser", 3)
     @comp_submarine = Ship.new("Submarine", 2)
     loop do
-        comp_cells = @computer_board.cell_names.shuffle[0..2]
-        if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
-          @computer_board.place(@comp_cruiser, comp_cells)
-          break
-        end
+      comp_cells = @computer_board.cell_names.shuffle[0..2]
+      if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
+        @computer_board.place(@comp_cruiser, comp_cells)
+        break
+      end
     end
 
     loop do
