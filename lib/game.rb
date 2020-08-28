@@ -7,8 +7,10 @@ class Game
   end
 
   def play
-    game_setup
-    turns
+    loop do
+      game_setup
+      turns
+    end
   end
 
   def game_setup
@@ -25,21 +27,27 @@ class Game
   end
 
   def turns
-    while game_is_still_going
+    loop do
       board_display
       turn_player_shot_prompt
       turn_validate_player_shot
-      turn_computer_shot
       stringify_player_results
+      player_results
+      if !game_is_still_going?
+        break
+      end
+      turn_computer_shot
       stringify_computer_results
-      turn_results
+      computer_results
+      if !game_is_still_going?
+        break
+      end
     end
     board_display
     victory
-    # need method here that checks if game is over -> one player has both ships sunk
   end
 
-  def game_is_still_going
+  def game_is_still_going?
     @player_board.render(true).include?("S") && @computer_board.render(true).include?("S")
   end
 
@@ -94,7 +102,7 @@ class Game
 
   def player_cruiser_validation_check
     loop do
-      @cruiser_placement_entry = gets.chomp
+      @cruiser_placement_entry = gets.chomp.upcase
       @cruiser_placement = @cruiser_placement_entry.split(" ")
       @cruiser = Ship.new("Cruiser", 3)
       if @player_board.valid_placement?(@cruiser, @cruiser_placement)
@@ -107,7 +115,7 @@ class Game
 
   def player_submarine_validation_check
     loop do
-      @submarine_placement_entry = gets.chomp
+      @submarine_placement_entry = gets.chomp.upcase
       @submarine_placement = @submarine_placement_entry.split(" ")
       @submarine = Ship.new("Submarine", 2)
       if @player_board.valid_placement?(@submarine, @submarine_placement)
@@ -170,13 +178,11 @@ class Game
 
   def turn_validate_player_shot
     loop do
-      @player_shot = gets.chomp
+      @player_shot = gets.chomp.upcase
       if @computer_board.cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon? == false
-        # player shot coordinate is in cell_names && cell has not been fired upon
         @computer_board.cells[@player_shot].fire_upon
         break
       elsif @computer_board.cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon?
-        # cell has been fired upon
         puts "You already shot at #{@player_shot}. Try another coordinate:"
         print "> "
       else
@@ -218,13 +224,16 @@ class Game
     end
   end
 
-  def turn_results
+  def player_results
     if @player_result == "HIT"
       puts "Your shot on #{@player_shot} was a HIT.\n" +
            "You sunk my #{@ship_sunk_by_player}!!"
     else
       puts "Your shot on #{@player_shot} was a #{@player_result}"
     end
+  end
+
+  def computer_results
     if @computer_result == "HIT"
       puts "My shot on #{@computer_shot} was a HIT.\n" +
            "I sunk your #{@ship_sunk_by_computer}!!"
