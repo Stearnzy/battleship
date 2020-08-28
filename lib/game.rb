@@ -8,6 +8,7 @@ class Game
 
   def play
     game_setup
+    turns
   end
 
   def game_setup
@@ -21,6 +22,17 @@ class Game
     player_submarine_placement_prompt
     player_submarine_validation_check
     player_place_submarine
+  end
+
+  def turns
+    turn_prompt
+    turn_player_shot_prompt
+    turn_validate_player_shot
+    turn_computer_shot
+    stringify_player_results
+    stringify_computer_results
+    turn_results
+    # need method here that checks if game is over -> one player has both ships sunk
   end
 
   def main_menu_prompt
@@ -126,5 +138,83 @@ class Game
         break
       end
     end
+  end
+
+  def turn_prompt
+    puts "=============COMPUTER BOARD============="
+    render_computer_board
+    puts "==============PLAYER BOARD=============="
+    render_player_board
+  end
+
+  def turn_player_shot_prompt
+    puts "Enter the coordinate for your shot:" +
+         "> "
+  end
+
+# this method is not functioning correctly
+  def turn_validate_player_shot
+    loop do
+      @player_shot = gets.chomp
+      if @computer_board.cell_names.include? @player_shot && @computer_board.cells[@player_shot].fired_upon? == false
+        # player shot coordinate is in cell_names && cell has not been fired upon
+        @computer_board.cells[@player_shot].fire_upon
+        break
+      elsif @computer_board.cell_names.include? @player_shot && @computer_board.cells[@player_shot].fired_upon?
+        # cell has been fired upon
+        puts "You already shot at #{@player_shot}. Try another coordinate:" +
+             "> "
+      else
+        puts "Please enter a valid coordinate:" +
+             "> "
+      end
+    end
+  end
+
+# everything below here is completely untested
+  def turn_computer_shot
+    loop do
+      @computer_shot = @player_board.shuffle[0]
+      if @player_board.cells[@computer_shot].fired_upon? == false
+        @player_board.cells[@computer_shot].fire_upon
+        break
+      end
+    end
+  end
+
+  def stringify_player_results
+    if @computer_board.cells[@player_shot].render == "H"
+      @player_result = "hit"
+    elsif @computer_board.cells[@player_shot].render == "M"
+      @player_result = "miss"
+    else # the only other result here should be "X"
+      @player_result = "HIT"
+      @ship_sunk_by_player = "#{@computer_board.cells[@player_shot].ship.name}"
+    end
+  end
+
+  def stringify_computer_results
+    if @player_board.cells[@computer_shot].render == "H"
+      @computer_result = "hit"
+    elsif @player_board.cells[@computer_shot].render == "M"
+      @computer_result = "miss"
+    else # the only other result here should be "X"
+      @computer_result = "HIT"
+      @ship_sunk_by_computer = "#{@player_board.cells[@computer_shot].ship.name}"
+    end
+  end
+
+  def turn_results
+    if @player_result == "HIT"
+      puts "Your shot on #{@player_shot} was a HIT." +
+           "You sunk my #{@ship_sunk_by_player}"
+    else
+      puts "Your shot on #{@player_shot} was a #{@player_result}."
+    end
+    if @computer_result == "HIT"
+      puts "My shot on #{@computer_shot} was a HIT." +
+           "I sunk your #{@ship_sunk_by_computer}!"
+    else
+      puts "My shot on #{@computer_shot} was a #{@computer_result}."
   end
 end
