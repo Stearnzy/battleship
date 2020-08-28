@@ -1,7 +1,7 @@
 require './lib/cell'
 
 class Board
-  attr_reader :cells
+  attr_reader :cells, :cell_names
 
   def initialize
     @cell_names = ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4",

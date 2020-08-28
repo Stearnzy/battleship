@@ -5,24 +5,11 @@ class Game
     @player_board = Board.new
     @computer_board = Board.new
   end
-  # def play
-  #   p "Welcome to BATTLESHIP"
-  #   p "Enter p to play. Enter q to quit."
-  #   print "> "
-  #
-  #   if gets.chomp.downcase == "q"
-  #     p "Goodbye"
-  #   elsif gets.chomp.downcase == "p"
-  #     p "hi"
-  #   else
-  #     p "Invalid command."
-  #   end
-  # end
 
   def play
     main_menu
     if @main_menu_response == 'p'
-      # computer lays out ships
+      computer_ship_placement
       player_ship_placement_prompt
       player_cruiser_placement_prompt
       player_cruiser_validation_check
@@ -30,8 +17,6 @@ class Game
       player_submarine_placement_prompt
       player_submarine_validation_check
       player_place_submarine
-    # add elsif/else
-
     end
   end
 
@@ -104,5 +89,25 @@ class Game
 
   def render_computer_board
     print @computer_board.render
+  end
+
+  def computer_ship_placement
+    @comp_cruiser = Ship.new("Cruiser", 3)
+    @comp_submarine = Ship.new("Submarine", 2)
+    loop do
+        comp_cells = @computer_board.cell_names.shuffle[0..2]
+        if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
+          @computer_board.place(@comp_cruiser, comp_cells)
+          break
+        end
+    end
+
+    loop do
+      comp_cells = @computer_board.cell_names.shuffle[0..1]
+      if @computer_board.valid_placement?(@comp_submarine, comp_cells) == true
+        @computer_board.place(@comp_submarine, comp_cells)
+        break
+      end
+    end
   end
 end
