@@ -5,19 +5,6 @@ class Game
     @player_board = Board.new
     @computer_board = Board.new
   end
-  # def play
-  #   p "Welcome to BATTLESHIP"
-  #   p "Enter p to play. Enter q to quit."
-  #   print "> "
-  #
-  #   if gets.chomp.downcase == "q"
-  #     p "Goodbye"
-  #   elsif gets.chomp.downcase == "p"
-  #     p "hi"
-  #   else
-  #     p "Invalid command."
-  #   end
-  # end
 
   def play
     main_menu
@@ -104,5 +91,49 @@ class Game
 
   def render_computer_board
     print @computer_board.render
+  end
+end
+
+# brainstorming
+directions = ["horizontal", "vertical"]
+loop do
+  directions.shuffle
+  @player_board.cell_names.shuffle
+  if directions[0] == "horizontal"
+    @player_board.cell_names[0]
+    # "A1" --> ["A1", "A2", "A3"]
+  else
+    @player_board.cell_names[0]
+    # "A1" --> ["A1", "B1", "C1"]
+  end
+  # run array through validation check
+    # if valid
+      # break
+    # if invalid
+      # start over
+end
+
+# brainstorming 2
+directions = ["horizontal", "vertical"]
+directions.shuffle
+if directions[0] == "horizontal"
+  final_column = 4
+  (@cruiser.length - 1).times do
+    @player_board.cell_names.each do |cell|
+      if cell[1] == final_column.to_s
+        @player_board.cell_names.delete(cell)
+      end
+    end
+    final_column -= 1
+  end
+else
+  final_row = "D"
+  (@cruiser.length - 1).times do
+    @player_board.cell_names.each do |cell|
+      if cell[0] == final_row
+        @player_board.cell_names.delete(cell)
+      end
+    end
+    final_row = (final_row.ord - 10).chr
   end
 end
