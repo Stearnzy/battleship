@@ -47,7 +47,7 @@ class Game
       if @main_menu_response == 'p'
         break
       elsif @main_menu_response == 'q'
-        # quit - how do we do this?
+        abort
       else
         puts "Sorry, #{@main_menu_response} is not a valid command.\n" +
              "Try typing p or q!" +
@@ -216,5 +216,6 @@ class Game
            "I sunk your #{@ship_sunk_by_computer}!"
     else
       puts "My shot on #{@computer_shot} was a #{@computer_result}."
+    end
   end
 end
