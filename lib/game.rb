@@ -5,24 +5,12 @@ class Game
     @player_board = Board.new
     @computer_board = Board.new
   end
-  # def play
-  #   p "Welcome to BATTLESHIP"
-  #   p "Enter p to play. Enter q to quit."
-  #   print "> "
-  #
-  #   if gets.chomp.downcase == "q"
-  #     p "Goodbye"
-  #   elsif gets.chomp.downcase == "p"
-  #     p "hi"
-  #   else
-  #     p "Invalid command."
-  #   end
-  # end
 
   def play
     main_menu
     if @main_menu_response == 'p'
       # computer lays out ships
+      computer_ship_placement
       player_ship_placement_prompt
       player_cruiser_placement_prompt
       player_cruiser_validation_check
@@ -49,6 +37,11 @@ class Game
   end
 
   def player_cruiser_placement_prompt
+    # remove me later
+    # trying to display the computer board while figuring out computer ship placement
+    puts @computer_board.render(true)
+    # remove me later
+
     puts "  1 2 3 4 \n" +
          "A . . . . \n" +
          "B . . . . \n" +
@@ -104,5 +97,33 @@ class Game
 
   def render_computer_board
     print @computer_board.render
+  end
+
+  # brainstorming
+  def computer_ship_placement
+    @comp_cruiser = Ship.new("Cruiser", 3)
+    @comp_submarine = Ship.new("Submarine", 2)
+    directions = ["horizontal"]
+    # directions = ["horizontal", "vertical"].shuffle
+    coordinates = []
+    loop do
+      if directions[0] == "horizontal"
+        # For cruiser
+        comp_cells = @computer_board.cell_names.shuffle[0..2]
+        if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
+          @computer_board.place(@comp_cruiser, comp_cells)
+          break
+        # "A1" --> ["A1", "A2", "A3"]
+      # else
+      #   @computer_board.cell_names[0]
+        # "A1" --> ["A1", "B1", "C1"]
+        end
+      end
+      # run array through validation check
+        # if valid
+        #   break
+        # if invalid
+        #   start over
+    end
   end
 end
