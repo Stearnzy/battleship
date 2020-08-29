@@ -28,7 +28,6 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_does_not_validate_non_existent_coordinates
-    skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
