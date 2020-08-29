@@ -14,14 +14,17 @@ class Board
   end
 
   def valid_placement?(ship, coordinate_choices)
-    # needs check to see if coordinates exist on board
-    if coordinates_are_empty?(coordinate_choices)
-      if ship.length == coordinate_choices.length
-        generate_row_and_column_arrays(coordinate_choices)
-        if all_on_one_row?
-          consecutive_numbers?(ship)
-        elsif all_on_one_column?
-          consecutive_letters?(ship)
+    if coordinates_exist_on_board?(coordinate_choices)
+      if coordinates_are_empty?(coordinate_choices)
+        if ship.length == coordinate_choices.length
+          generate_row_and_column_arrays(coordinate_choices)
+          if all_on_one_row?
+            consecutive_numbers?(ship)
+          elsif all_on_one_column?
+            consecutive_letters?(ship)
+          else
+            false
+          end
         else
           false
         end
@@ -31,6 +34,16 @@ class Board
     else
       false
     end
+  end
+
+  def coordinates_exist_on_board?(coordinate_choices)
+    valid_choices = true
+    coordinate_choices.each do |coordinate_choice|
+      if !@cell_names.include? coordinate_choice
+        valid_choices = false
+      end
+    end
+    valid_choices
   end
 
   def coordinates_are_empty?(coordinate_choices)
