@@ -14,10 +14,8 @@ class Board
   end
 
   def valid_placement?(ship, coordinate_choices)
-    empty_coordinates = coordinate_choices.map do |coordinate|
-      @cells[coordinate].empty?
-    end
-    if empty_coordinates.all?
+    # needs check to see if coordinates exist on board
+    if coordinates_are_empty?(coordinate_choices)
       if ship.length == coordinate_choices.length
         generate_row_and_column_arrays(coordinate_choices)
         if all_on_one_row?
@@ -33,6 +31,13 @@ class Board
     else
       false
     end
+  end
+
+  def coordinates_are_empty?(coordinate_choices)
+    empty_coordinates = coordinate_choices.map do |coordinate|
+      @cells[coordinate].empty?
+    end
+    empty_coordinates.all?
   end
 
   def generate_row_and_column_arrays(coordinate_choices)
