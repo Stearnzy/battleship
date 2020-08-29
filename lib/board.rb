@@ -10,43 +10,18 @@ class Board
   end
 
   def valid_coordinate?(key)
-    if self.cells.has_key?(key)
-      return true
-    else
-      return false
-    end
+    cells.has_key?(key)
   end
 
   def valid_placement?(ship, coordinate_choices)
-    empty_coordinates = coordinate_choices.map do |coordinate|
-      @cells[coordinate].empty?
-    end
-    if empty_coordinates.all?
-      if ship.length == coordinate_choices.length
-        letters = []
-        numbers = []
-        coordinate_choices.each do |value|
-           letters << value[0]
-           numbers << value[1].to_i
-        end
-
-        if letters.uniq.count == 1
-          consecutive_numbers = []
-          (1..4).each_cons(ship.length) do |array|
-            consecutive_numbers << array
-          end
-          if consecutive_numbers.include? numbers
-            true
-          else
-            false
-          end
-        elsif numbers.uniq.count == 1
-          consecutive_letters = []
-          ("A".."D").each_cons(ship.length) do |array|
-            consecutive_letters << array
-          end
-          if consecutive_letters.include? letters
-            true
+    if coordinates_exist_on_board?(coordinate_choices)
+      if coordinates_are_empty?(coordinate_choices)
+        if ship.length == coordinate_choices.length
+          generate_row_and_column_arrays(coordinate_choices)
+          if all_on_one_row?
+            consecutive_numbers?(ship)
+          elsif all_on_one_column?
+            consecutive_letters?(ship)
           else
             false
           end
@@ -59,6 +34,56 @@ class Board
     else
       false
     end
+  end
+
+  def coordinates_exist_on_board?(coordinate_choices)
+    valid_choices = true
+    coordinate_choices.each do |coordinate_choice|
+      if !@cell_names.include? coordinate_choice
+        valid_choices = false
+      end
+    end
+    valid_choices
+  end
+
+  def coordinates_are_empty?(coordinate_choices)
+    empty_coordinates = coordinate_choices.map do |coordinate|
+      @cells[coordinate].empty?
+    end
+    empty_coordinates.all?
+  end
+
+  def generate_row_and_column_arrays(coordinate_choices)
+    @row_letters = []
+    @column_numbers = []
+    coordinate_choices.each do |value|
+       @row_letters << value[0]
+       @column_numbers << value[1].to_i
+    end
+  end
+
+  def all_on_one_row?
+    @row_letters.uniq.count == 1
+  end
+
+  def consecutive_numbers?(ship)
+    consecutive_numbers = []
+    (1..4).each_cons(ship.length) do |array|
+      consecutive_numbers << array
+    end
+    consecutive_numbers.include? @column_numbers
+  end
+
+  def all_on_one_column?
+    @column_numbers.uniq.count == 1
+  end
+
+  def consecutive_letters?(ship)
+    consecutive_letters = []
+    ("A".."D").each_cons(ship.length) do |array|
+      consecutive_letters << array
+    end
+    consecutive_letters.include? @row_letters
   end
 
   def place(ship, coordinates)
