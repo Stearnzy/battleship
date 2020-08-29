@@ -133,7 +133,6 @@ class Game
 
   def player_place_submarine
     @player_board.place(@submarine, @submarine_placement)
-    render_player_board
   end
 
   def render_player_board
