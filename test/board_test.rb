@@ -32,8 +32,11 @@ class BoardTest < Minitest::Test
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
-    assert_equal false, board.valid_placement?(cruiser, ["H1", "N1"])
-    assert_equal false, board.valid_placement?(submarine, ["A2", "A6", "A9"])
+    assert board.valid_coordinate?("D4")
+    assert_equal false, board.valid_coordinate?("D5")
+    assert_equal false, board.valid_coordinate?("O9")
+    assert_equal false, board.valid_placement?(cruiser, ["A2", "A6", "A9"])
+    assert_equal false, board.valid_placement?(submarine, ["H1", "N1"])
   end
 
   def test_it_does_not_validate_incorrect_ship_lengths
