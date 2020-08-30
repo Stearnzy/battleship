@@ -95,7 +95,12 @@ class Board
 
   def render(player_board = false)
     final_string = []
-    final_string << "  1 2 3 4 \n"
+    column_numbers = @width.downto(1).to_a.reverse
+    final_string << "  "
+    column_numbers.each do |column_number|
+      final_string << "#{column_number} "
+    end
+    final_string << "\n"
     rows = @cell_names.each_slice(@width).to_a
     rows.each do |individual_row|
       final_string << ((individual_row[0])[0] + " ")
