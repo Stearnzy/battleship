@@ -16,8 +16,8 @@ class Game
     main_menu_prompt
     verify_main_menu_response
     board_size_prompt
-    @player_board = Board.new(@cell_names)
-    @computer_board = Board.new(@cell_names)
+    @player_board = Board.new(@cell_names, @height, @width)
+    @computer_board = Board.new(@cell_names, @height, @width)
     computer_ship_placement
     player_ship_placement_prompt
     player_cruiser_placement_prompt
