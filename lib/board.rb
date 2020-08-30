@@ -1,7 +1,7 @@
 require './lib/cell'
 
 class Board
-  attr_reader :cells, :cell_names
+  attr_reader :cells, :cell_names, :height, :width
 
   def initialize(cell_names, height = 4, width = 4)
     @cell_names = cell_names
@@ -69,7 +69,7 @@ class Board
 
   def consecutive_numbers?(ship)
     consecutive_numbers = []
-    (1..4).each_cons(ship.length) do |array|
+    (1..@width).each_cons(ship.length) do |array|
       consecutive_numbers << array
     end
     consecutive_numbers.include? @column_numbers
@@ -81,7 +81,7 @@ class Board
 
   def consecutive_letters?(ship)
     consecutive_letters = []
-    ("A".."D").each_cons(ship.length) do |array|
+    ("A"..(@width + 64).chr).each_cons(ship.length) do |array|
       consecutive_letters << array
     end
     consecutive_letters.include? @row_letters
