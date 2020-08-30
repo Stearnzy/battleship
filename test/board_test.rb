@@ -2,25 +2,31 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/ship'
 require './lib/cell'
+require './lib/cell_generator'
 require './lib/board'
 
 class BoardTest < Minitest::Test
+  def setup
+    @board_specs = CellGenerator.new
+    @board_specs.populate_cell_names
+    @cell_names = @generator.cell_names
+  end
 
   def test_it_exists
-    board = Board.new
+    board = Board.new(@cell_names)
 
     assert_instance_of Board, board
   end
 
   def test_cells_exist
-    board = Board.new
+    board = Board.new(@cell_names)
     board.cells
 
     assert_equal 16, board.cells.keys.length
   end
 
   def test_it_can_validate_coordinates
-    board = Board.new
+    board = Board.new(@cell_names)
     board.cells
 
     assert board.valid_coordinate?("A1")
@@ -28,7 +34,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_does_not_validate_non_existent_coordinates
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -37,7 +43,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_does_not_validate_incorrect_ship_lengths
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -46,7 +52,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_does_not_validate_non_consecutive_coordinates
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -57,7 +63,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_does_not_validate_diagonal_coordinates
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -66,7 +72,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_validate_proper_placement
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -75,7 +81,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_place_ship_onto_board
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     board.place(cruiser, ["A1", "A2", "A3"])
 
@@ -91,7 +97,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_ships_cannot_overlap
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     board.place(cruiser, ["A1", "A2", "A3"])
     submarine = Ship.new("Submarine", 2)
@@ -99,7 +105,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_render_empty_board
-    board = Board.new
+    board = Board.new(@cell_names)
 
     assert_equal "  1 2 3 4 \n" +
                 "A . . . . \n" +
@@ -109,7 +115,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_render_ship_on_board
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
 
     board.place(cruiser, ["A1", "A2", "A3"])
@@ -122,7 +128,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_render_a_miss
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     board.place(cruiser, ["A4", "B4", "C4"])
 
@@ -146,7 +152,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_if_can_render_a_hit
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     board.place(cruiser, ["A4", "B4", "C4"])
 
@@ -164,7 +170,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_render_a_sink
-    board = Board.new
+    board = Board.new(@cell_names)
     cruiser = Ship.new("Cruiser", 3)
     board.place(cruiser, ["A4", "B4", "C4"])
 
