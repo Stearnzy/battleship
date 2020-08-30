@@ -81,7 +81,7 @@ class Board
 
   def consecutive_letters?(ship)
     consecutive_letters = []
-    ("A"..(@width + 64).chr).each_cons(ship.length) do |array|
+    ("A"..(@height + 64).chr).each_cons(ship.length) do |array|
       consecutive_letters << array
     end
     consecutive_letters.include? @row_letters
