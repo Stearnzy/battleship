@@ -178,7 +178,7 @@ class Game
     @comp_cruiser = Ship.new("Cruiser", 3)
     @comp_submarine = Ship.new("Submarine", 2)
     loop do
-      comp_cells = @computer_board.cell_names.shuffle[0..2]
+      comp_cells = @cell_names.shuffle[0..2]
       if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
         @computer_board.place(@comp_cruiser, comp_cells)
         break
@@ -186,7 +186,7 @@ class Game
     end
 
     loop do
-      comp_cells = @computer_board.cell_names.shuffle[0..1]
+      comp_cells = @cell_names.shuffle[0..1]
       if @computer_board.valid_placement?(@comp_submarine, comp_cells) == true
         @computer_board.place(@comp_submarine, comp_cells)
         break
@@ -209,10 +209,10 @@ class Game
   def turn_validate_player_shot
     loop do
       @player_shot = gets.chomp.upcase
-      if @computer_board.cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon? == false
+      if @cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon? == false
         @computer_board.cells[@player_shot].fire_upon
         break
-      elsif @computer_board.cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon?
+      elsif @cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon?
         puts "You already shot at #{@player_shot}. Try another coordinate:"
         print "> "
       else
@@ -224,7 +224,7 @@ class Game
 
   def turn_computer_shot
     loop do
-      @computer_shot = @player_board.cell_names.shuffle[0]
+      @computer_shot = @cell_names.shuffle[0]
       if @player_board.cells[@computer_shot].fired_upon? == false
         @player_board.cells[@computer_shot].fire_upon
         break
