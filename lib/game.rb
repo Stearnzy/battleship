@@ -62,12 +62,26 @@ class Game
       elsif size_response == "n"
         puts "Sure. What board height would you like to play on?\n" +
              "> "
-        board_height = gets.chomp.to_i
-        @height = board_height
+        loop do
+          @height = gets.chomp.to_i
+          if (1..9).to_a.include? @height
+            break
+          else
+            puts "Sorry, #{@height} is not a valid height. Please input 1 - 9."
+            print "> "
+          end
+        end
         puts "What board width would you like to play on?\n" +
              "> "
-        board_width = gets.chomp.to_i
-        @width = board_width
+        loop do
+          @width = gets.chomp.to_i
+          if (1..9).to_a.include? @width
+            break
+          else
+            puts "Sorry, #{@height} is not a valid height. Please input 1 - 9."
+            print "> "
+          end
+        end
         puts "Great! #{@height} x #{@width} board initializing..."
         break
       else
