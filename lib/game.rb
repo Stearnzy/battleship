@@ -1,9 +1,8 @@
 class Game
-  attr_reader :player_board, :computer_board
+  attr_reader :player_board, :computer_board, :cell_names
 
   def initialize
-    @player_board = Board.new
-    @computer_board = Board.new
+    @cell_names = []
   end
 
   def play
@@ -16,6 +15,9 @@ class Game
   def game_setup
     main_menu_prompt
     verify_main_menu_response
+    board_size_prompt
+    @player_board = Board.new(@cell_names)
+    @computer_board = Board.new(@cell_names)
     computer_ship_placement
     player_ship_placement_prompt
     player_cruiser_placement_prompt
@@ -45,6 +47,37 @@ class Game
     end
     board_display
     victory
+  end
+
+  def board_size_prompt
+    puts "Would you like to play with the standard 4x4 board? (y/n)\n" +
+         "> "
+    loop do
+      size_response = gets.chomp.downcase
+      if size_response == "y"
+        puts "Great! 4 x 4 board initializing..."
+        @height = 4
+        @width = 4
+        break
+      elsif size_response == "n"
+        puts "Sure. What board height would you like to play on?\n" +
+             "> "
+        board_height = gets.chomp.to_i
+        @height = board_height
+        puts "What board width would you like to play on?\n" +
+             "> "
+        board_width = gets.chomp.to_i
+        @width = board_width
+        puts "Great! #{@height} x #{@width} board initializing..."
+        break
+      else
+        puts "Sorry, #{size_response} is not a valid command.\n" +
+             "Type 'y' for 4 x 4 board, or 'n' to pick a different size."
+      end
+    end
+      board_specs = CellGenerator.new(@height, @width)
+      board_specs.populate_cell_names
+      @cell_names = board_specs.cell_names
   end
 
   def game_is_still_going?
@@ -87,17 +120,14 @@ class Game
   end
 
   def player_cruiser_placement_prompt
-    puts "  1 2 3 4 \n" +
-         "A . . . . \n" +
-         "B . . . . \n" +
-         "C . . . . \n" +
-         "D . . . . \n" +
-         "Enter the squares for the Cruiser (3 spaces):"
+    render_player_board
+    puts "Enter the squares for the Cruiser (3 spaces):"
     print "> "
   end
 
   def player_submarine_placement_prompt
     puts "Now enter the squares for the Submarine (2 spaces):"
+    print "> "
   end
 
   def player_cruiser_validation_check
