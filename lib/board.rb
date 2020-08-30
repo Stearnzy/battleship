@@ -3,8 +3,10 @@ require './lib/cell'
 class Board
   attr_reader :cells, :cell_names
 
-  def initialize(cell_names)
+  def initialize(cell_names, height = 4, width = 4)
     @cell_names = cell_names
+    @height = height
+    @width = width
     @cells = Hash[@cell_names.collect {|name| [name, Cell.new(name)]}]
   end
 
@@ -94,7 +96,7 @@ class Board
   def render(player_board = false)
     final_string = []
     final_string << "  1 2 3 4 \n"
-    rows = @cell_names.each_slice(4).to_a
+    rows = @cell_names.each_slice(@width).to_a
     rows.each do |individual_row|
       final_string << ((individual_row[0])[0] + " ")
       individual_row.each do |cell|
