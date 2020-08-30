@@ -14,6 +14,5 @@ class CellGenerator
         @cell_names << "#{ordinal_height.chr}" + "#{(width_count + 1)}"
       end
     end
-    @cell_names
   end
 end
