@@ -105,6 +105,20 @@ class BoardTest < Minitest::Test
     assert_equal false, board.valid_placement?(submarine, ["A1", "B1"])
   end
 
+  def test_it_can_validate_placement_with_variable_size
+    board_specs = CellGenerator.new(6, 6)
+    board_specs.populate_cell_names
+    cell_names = board_specs.cell_names
+    board = Board.new(cell_names, board_specs.height, board_specs.width)
+    cruiser = Ship.new("Cruiser", 3)
+    submarine = Ship.new("Submarine", 2)
+
+    assert board.valid_placement?(cruiser, ["F4", "F5", "F6"])
+    assert board.valid_placement?(cruiser, ["D6", "E6", "F6"])
+    assert_equal false, board.valid_placement?(cruiser, ["F5", "F6", "F7"])
+    assert_equal false, board.valid_placement?(cruiser, ["E6", "F6", "G6"])
+  end
+
   def test_it_can_render_empty_board
     board = Board.new(@cell_names)
 
