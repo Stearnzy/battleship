@@ -9,7 +9,8 @@ class BoardTest < Minitest::Test
   def setup
     @board_specs = CellGenerator.new
     @board_specs.populate_cell_names
-    @cell_names = @generator.cell_names
+    @cell_names = @board_specs.cell_names
+    @board_width = @board_specs.width
   end
 
   def test_it_exists
