@@ -1,11 +1,12 @@
 require './lib/cell'
 
 class Board
-  attr_reader :cells, :cell_names
+  attr_reader :cells, :cell_names, :height, :width
 
-  def initialize
-    @cell_names = ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4",
-    "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"]
+  def initialize(cell_names, height = 4, width = 4)
+    @cell_names = cell_names
+    @height = height
+    @width = width
     @cells = Hash[@cell_names.collect {|name| [name, Cell.new(name)]}]
   end
 
@@ -68,7 +69,7 @@ class Board
 
   def consecutive_numbers?(ship)
     consecutive_numbers = []
-    (1..4).each_cons(ship.length) do |array|
+    (1..@width).each_cons(ship.length) do |array|
       consecutive_numbers << array
     end
     consecutive_numbers.include? @column_numbers
@@ -80,7 +81,7 @@ class Board
 
   def consecutive_letters?(ship)
     consecutive_letters = []
-    ("A".."D").each_cons(ship.length) do |array|
+    ("A"..(@height + 64).chr).each_cons(ship.length) do |array|
       consecutive_letters << array
     end
     consecutive_letters.include? @row_letters
@@ -94,8 +95,13 @@ class Board
 
   def render(player_board = false)
     final_string = []
-    final_string << "  1 2 3 4 \n"
-    rows = @cell_names.each_slice(4).to_a
+    column_numbers = @width.downto(1).to_a.reverse
+    final_string << "  "
+    column_numbers.each do |column_number|
+      final_string << "#{column_number} "
+    end
+    final_string << "\n"
+    rows = @cell_names.each_slice(@width).to_a
     rows.each do |individual_row|
       final_string << ((individual_row[0])[0] + " ")
       individual_row.each do |cell|

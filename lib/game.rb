@@ -1,9 +1,8 @@
 class Game
-  attr_reader :player_board, :computer_board
+  attr_reader :player_board, :computer_board, :cell_names
 
   def initialize
-    @player_board = Board.new
-    @computer_board = Board.new
+    @cell_names = []
   end
 
   def play
@@ -16,6 +15,9 @@ class Game
   def game_setup
     main_menu_prompt
     verify_main_menu_response
+    board_size_prompt
+    @player_board = Board.new(@cell_names, @height, @width)
+    @computer_board = Board.new(@cell_names, @height, @width)
     computer_ship_placement
     player_ship_placement_prompt
     player_cruiser_placement_prompt
@@ -45,6 +47,51 @@ class Game
     end
     board_display
     victory
+  end
+
+  def board_size_prompt
+    puts "Would you like to play with the standard 4x4 board? (y/n)\n" +
+         "> "
+    loop do
+      size_response = gets.chomp.downcase
+      if size_response == "y"
+        puts "Great! 4 x 4 board initializing..."
+        @height = 4
+        @width = 4
+        break
+      elsif size_response == "n"
+        puts "Sure. What board height would you like to play on?\n" +
+             "> "
+        loop do
+          @height = gets.chomp.to_i
+          if (1..9).to_a.include? @height
+            break
+          else
+            puts "Sorry, #{@height} is not a valid height. Please input 1 - 9."
+            print "> "
+          end
+        end
+        puts "What board width would you like to play on?\n" +
+             "> "
+        loop do
+          @width = gets.chomp.to_i
+          if (1..9).to_a.include? @width
+            break
+          else
+            puts "Sorry, #{@height} is not a valid height. Please input 1 - 9."
+            print "> "
+          end
+        end
+        puts "Great! #{@height} x #{@width} board initializing..."
+        break
+      else
+        puts "Sorry, #{size_response} is not a valid command.\n" +
+             "Type 'y' for 4 x 4 board, or 'n' to pick a different size."
+      end
+    end
+      board_specs = CellGenerator.new(@height, @width)
+      board_specs.populate_cell_names
+      @cell_names = board_specs.cell_names
   end
 
   def game_is_still_going?
@@ -87,17 +134,14 @@ class Game
   end
 
   def player_cruiser_placement_prompt
-    puts "  1 2 3 4 \n" +
-         "A . . . . \n" +
-         "B . . . . \n" +
-         "C . . . . \n" +
-         "D . . . . \n" +
-         "Enter the squares for the Cruiser (3 spaces):"
+    render_player_board
+    puts "Enter the squares for the Cruiser (3 spaces):"
     print "> "
   end
 
   def player_submarine_placement_prompt
     puts "Now enter the squares for the Submarine (2 spaces):"
+    print "> "
   end
 
   def player_cruiser_validation_check
@@ -148,7 +192,7 @@ class Game
     @comp_cruiser = Ship.new("Cruiser", 3)
     @comp_submarine = Ship.new("Submarine", 2)
     loop do
-      comp_cells = @computer_board.cell_names.shuffle[0..2]
+      comp_cells = @cell_names.shuffle[0..2]
       if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
         @computer_board.place(@comp_cruiser, comp_cells)
         break
@@ -156,7 +200,7 @@ class Game
     end
 
     loop do
-      comp_cells = @computer_board.cell_names.shuffle[0..1]
+      comp_cells = @cell_names.shuffle[0..1]
       if @computer_board.valid_placement?(@comp_submarine, comp_cells) == true
         @computer_board.place(@comp_submarine, comp_cells)
         break
@@ -179,10 +223,10 @@ class Game
   def turn_validate_player_shot
     loop do
       @player_shot = gets.chomp.upcase
-      if @computer_board.cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon? == false
+      if @cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon? == false
         @computer_board.cells[@player_shot].fire_upon
         break
-      elsif @computer_board.cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon?
+      elsif @cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon?
         puts "You already shot at #{@player_shot}. Try another coordinate:"
         print "> "
       else
@@ -194,7 +238,7 @@ class Game
 
   def turn_computer_shot
     loop do
-      @computer_shot = @player_board.cell_names.shuffle[0]
+      @computer_shot = @cell_names.shuffle[0]
       if @player_board.cells[@computer_shot].fired_upon? == false
         @player_board.cells[@computer_shot].fire_upon
         break
