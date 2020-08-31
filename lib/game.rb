@@ -2,20 +2,22 @@ class Game
   attr_reader :player_board, :computer_board
 
   def initialize
-    @player_board = Board.new
-    @computer_board = Board.new
   end
 
   def play
+    main_menu_prompt
+    verify_main_menu_response
     loop do
       game_setup
       turns
+      replay_prompt
+      verify_main_menu_response
     end
   end
 
   def game_setup
-    main_menu_prompt
-    verify_main_menu_response
+    @player_board = Board.new
+    @computer_board = Board.new
     computer_ship_placement
     player_ship_placement_prompt
     player_cruiser_placement_prompt
@@ -57,6 +59,11 @@ class Game
     elsif @player_board.render(true).include?("S")
       puts "Congratulations player, you win!!!"
     end
+  end
+
+  def replay_prompt
+    puts "Play again? Enter p to play or q to quit."
+    print "> "
   end
 
   def main_menu_prompt
