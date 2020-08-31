@@ -3,5 +3,6 @@ require './lib/cell'
 require './lib/board'
 require './lib/game'
 
-game = Game.new
+# Since we're requiring game above, no need to initialize
+# game = Game.new
 game.play
