@@ -16,8 +16,8 @@ class Game
   end
 
   def game_setup
-    @player_board = Board.new
-    @computer_board = Board.new
+    # @player_board = Board.new
+    # @computer_board = Board.new
     computer_ship_placement
     player_ship_placement_prompt
     player_cruiser_placement_prompt
