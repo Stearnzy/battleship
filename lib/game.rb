@@ -6,6 +6,8 @@ class Game
   end
 
   def play
+    main_menu_prompt
+    verify_main_menu_response
     loop do
       game_setup
       turns
@@ -15,8 +17,6 @@ class Game
   end
 
   def game_setup
-    main_menu_prompt
-    verify_main_menu_response
     board_size_prompt
     @player_board = Board.new(@cell_names, @height, @width)
     @computer_board = Board.new(@cell_names, @height, @width)
