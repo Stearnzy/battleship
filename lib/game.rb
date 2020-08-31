@@ -9,6 +9,8 @@ class Game
     loop do
       game_setup
       turns
+      replay_prompt
+      verify_main_menu_response
     end
   end
 
@@ -104,6 +106,11 @@ class Game
     elsif @player_board.render(true).include?("S")
       puts "Congratulations player, you win!!!"
     end
+  end
+
+  def replay_prompt
+    puts "Play again? Enter p to play or q to quit."
+    print "> "
   end
 
   def main_menu_prompt
