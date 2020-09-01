@@ -1,14 +1,11 @@
 class GamePlay
   attr_reader :player_board, :computer_board, :cell_names
 
-  def initialize(cell_names, computer_cruiser, computer_submarine, player_cruiser, player_submarine, computer_board, player_board)
+  def initialize(cell_names, computer_board, player_board)
     @cell_names = cell_names
-    @computer_cruiser = computer_cruiser
-    @computer_submarine = computer_submarine
-    @player_cruiser = player_cruiser
-    @player_submarine = player_submarine
     @computer_board = computer_board
     @player_board = player_board
+    @player_is_winner = nil
   end
 
   def turns
@@ -38,9 +35,12 @@ class GamePlay
 
   def victory
     if @computer_board.render(true).include?("S")
+      @player_is_winner = false
       puts "Sorry player, I win!"
     elsif @player_board.render(true).include?("S")
+      @player_is_winner = true
       puts "Congratulations player, you win!!!"
+
     end
   end
 
