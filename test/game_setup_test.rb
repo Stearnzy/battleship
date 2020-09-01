@@ -36,10 +36,20 @@ class GameSetupTest < Minitest::Test
     generator = CellGenerator.new
     generator.populate_cell_names
     cell_names = generator.cell_names
-    random_cells_1 = setup.randomize_computer_cruiser_cells(cell_names)
-    random_cells_2 = setup.randomize_computer_cruiser_cells(cell_names)
+    fail = 0
+    pass = 0
 
-    refute_equal random_cells_1, random_cells_2
+    100.times do
+      random_cells_1 = setup.randomize_computer_cruiser_cells(cell_names)
+      random_cells_2 = setup.randomize_computer_cruiser_cells(cell_names)
+      if random_cells_1 == random_cells_2
+        fail += 1
+      else
+        pass += 1
+      end
+    end
+    percent_pass = pass / 100
+    assert_in_delta  1.0, percent_pass, 0.05
   end
 
 end
