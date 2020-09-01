@@ -94,21 +94,21 @@ class Board
   end
 
   def render(player_board = false)
-    final_string = []
+    board_lines = []
     column_numbers = @width.downto(1).to_a.reverse
-    final_string << "  "
+    board_lines << "  "
     column_numbers.each do |column_number|
-      final_string << "#{column_number} "
+      board_lines << "#{column_number} "
     end
-    final_string << "\n"
+    board_lines << "\n"
     rows = @cell_names.each_slice(@width).to_a
     rows.each do |individual_row|
-      final_string << ((individual_row[0])[0] + " ")
+      board_lines << ((individual_row[0])[0] + " ")
       individual_row.each do |cell|
-        final_string << @cells[cell].render(player_board) + " "
+        board_lines << @cells[cell].render(player_board) + " "
       end
-      final_string << "\n"
+      board_lines << "\n"
     end
-    final_string.join
+    board_lines.join
   end
 end
