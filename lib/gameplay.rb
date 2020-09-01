@@ -25,21 +25,27 @@ class GamePlay
       end
     end
     board_display
-    victory
+    victory_prompt
   end
 
   def game_is_still_going?
     @player_board.render(true).include?("S") && @computer_board.render(true).include?("S")
   end
 
-  def victory
-    if @computer_board.render(true).include?("S")
+  def victory_prompt
+    if computer_won?
       puts "Sorry player, I win!"
-      false
-    elsif @player_board.render(true).include?("S")
+    elsif player_won?
       puts "Congratulations player, you win!!!"
-      true
     end
+  end
+
+  def player_won?
+    @player_board.render(true).include?("S") && !@computer_board.render(true).include?("S")
+  end
+
+  def computer_won?
+    @computer_board.render(true).include?("S") && !@player_board.render(true).include?("S")
   end
 
   def replay_prompt
@@ -71,7 +77,7 @@ class GamePlay
     loop do
       @player_shot = gets.chomp.upcase
       if @cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon? == false
-        @computer_board.cells[@player_shot].fire_upon
+        turn_player_shot(@player_shot)
         break
       elsif @cell_names.include?(@player_shot) && @computer_board.cells[@player_shot].fired_upon?
         puts "You already shot at #{@player_shot}. Try another coordinate:"
@@ -81,6 +87,10 @@ class GamePlay
         print "> "
       end
     end
+  end
+
+  def turn_player_shot(player_shot)
+    @computer_board.cells[player_shot].fire_upon
   end
 
   def turn_computer_shot
