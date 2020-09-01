@@ -5,13 +5,12 @@ require './lib/board'
 require './lib/gameplay'
 require './lib/game_setup'
 
-# game = Game.new
-# game.play
-
-
 setup = GameSetup.new
-setup.setup
-gameplay = Game.new(setup.cell_names, setup.height, setup.width)
-# setup.placement
-# gameplay.computer_ship_placement
-gameplay.play
+setup.main_menu
+loop do
+  setup.setup
+  setup.placement
+  gameplay = Game.new(setup.cell_names, setup.computer_cruiser, setup.computer_submarine, setup.player_place_cruiser, setup.player_submarine, setup.computer_board, setup.player_board)
+  gameplay.turns
+  setup.replay
+end
