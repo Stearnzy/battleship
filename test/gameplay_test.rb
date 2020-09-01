@@ -61,7 +61,23 @@ class GamePlayTest < Minitest::Test
     gameplay.turn_computer_shot
     gameplay.turn_computer_shot
 
-    assert_equal false, gameplay.victory
-    assert_equal false, gameplay.player_board.render(true).include?("S")
+    assert_equal true, gameplay.computer_won?
+    assert_equal false, gameplay.player_won?
+  end
+
+  def test_player_can_win
+    cell_names = ["A1", "A2"]
+    player_board = Board.new(cell_names, 1, 2)
+    computer_board = Board.new(cell_names, 1, 2)
+    player_submarine = Ship.new("Submarine", 2)
+    computer_submarine = Ship.new("Submarine", 2)
+    player_board.place(player_submarine, ["A1", "A2"])
+    computer_board.place(computer_submarine, ["A1", "A2"])
+    gameplay = GamePlay.new(cell_names, computer_board, player_board)
+    gameplay.turn_player_shot("A1")
+    gameplay.turn_player_shot("A2")
+
+    assert_equal false, gameplay.computer_won?
+    assert_equal true, gameplay.player_won?
   end
 end
