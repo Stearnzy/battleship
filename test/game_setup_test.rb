@@ -51,5 +51,4 @@ class GameSetupTest < Minitest::Test
     percent_pass = pass / 100
     assert_in_delta  1.0, percent_pass, 0.05
   end
-
 end
