@@ -10,7 +10,7 @@ setup.main_menu
 loop do
   setup.setup
   setup.placement
-  gameplay = Game.new(setup.cell_names, setup.computer_cruiser, setup.computer_submarine, setup.player_place_cruiser, setup.player_submarine, setup.computer_board, setup.player_board)
+  gameplay = GamePlay.new(setup.cell_names, setup.computer_cruiser, setup.computer_submarine, setup.player_place_cruiser, setup.player_submarine, setup.computer_board, setup.player_board)
   gameplay.turns
   setup.replay
 end

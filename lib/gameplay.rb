@@ -1,4 +1,4 @@
-class Game
+class GamePlay
   attr_reader :player_board, :computer_board, :cell_names
 
   def initialize(cell_names, computer_cruiser, computer_submarine, player_cruiser, player_submarine, computer_board, player_board)
