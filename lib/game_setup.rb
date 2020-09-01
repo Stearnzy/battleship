@@ -1,5 +1,5 @@
 class GameSetup
-  attr_reader :cell_names, :height, :width, :computer_cruiser, :computer_submarine, :player_cruiser, :player_submarine, :computer_board, :player_board
+  attr_reader :cell_names, :height, :width, :computer_board, :player_board
   def initialize
   end
 
