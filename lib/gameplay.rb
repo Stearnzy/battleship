@@ -94,9 +94,9 @@ class GamePlay
   end
 
   def turn_computer_shot
-    if !@player_board.render(true).include? "H"
+    if !@player_board.render.include? "H"
       hunt
-    elsif @player_board.render(true).count("H") == 1
+    elsif @player_board.render.count("H") == 1
       target
     else # MORE THAN ONE "H"
       finish_him
@@ -116,8 +116,8 @@ class GamePlay
   def target
     identify_hit_cell
     map_surrounding_cells
-    @computer_shot = @surrounding_cells.shuffle[0]
-    @player_board.cells[@computer_shot].fire_upon
+    remove_invalid_surrounding_cells
+    targeted_fire
   end
 
   def identify_hit_cell
@@ -133,6 +133,9 @@ class GamePlay
     @surrounding_cells << split_hit_cell[0] + (split_hit_cell[1].to_i + 1).to_s
     @surrounding_cells << (split_hit_cell[0].ord - 1).chr + split_hit_cell[1]
     @surrounding_cells << (split_hit_cell[0].ord + 1).chr + split_hit_cell[1]
+  end
+
+  def remove_invalid_surrounding_cells
     @surrounding_cells.each do |cell|
       if !player_board.cell_names.include? cell
         @surrounding_cells.delete(cell)
@@ -140,27 +143,95 @@ class GamePlay
         @surrounding_cells.delete(cell)
       end
     end
+    @surrounding_cells = @surrounding_cells.uniq
+  end
+
+  def targeted_fire
+    @computer_shot = @surrounding_cells.shuffle[0]
+    @player_board.cells[@computer_shot].fire_upon
+  end
+
+  def finish_him
+    identify_hit_cells
+    if same_row?
+      map_row_ends
+      remove_invalid_surrounding_cells
+      if @surrounding_cells == []
+        map_surrounding_cells_multiple_cells
+        remove_invalid_surrounding_cells
+        targeted_fire
+      else
+        targeted_fire
+      end
+    elsif same_column?
+      map_column_ends
+      remove_invalid_surrounding_cells
+      if @surrounding_cells == []
+        map_surrounding_cells_multiple_cells
+        remove_invalid_surrounding_cells
+        targeted_fire
+      else
+        targeted_fire
+      end
+    else
+      map_surrounding_cells_multiple_cells
+      remove_invalid_surrounding_cells
+      targeted_fire
+    end
+  end
+
+  def identify_hit_cells
+    @hit_cells = @player_board.cells.find_all do |name, cell|
+      cell.render == "H"
+    end
+  end
+
+  def same_row?
+    hit_cell_row = @hit_cells.map do |name, cell|
+      name[0]
+    end
+    hit_cell_row.uniq.count == 1
+  end
+
+  def map_row_ends
+    hit_cell_names = @hit_cells.map do |name, cell|
+      name
+    end
+    hit_cell_names.sort
+    @surrounding_cells = []
+    @surrounding_cells << hit_cell_names[0][0] + (hit_cell_names[0][1].to_i - 1).to_s
+    @surrounding_cells << hit_cell_names[-1][0] + (hit_cell_names[-1][1].to_i + 1).to_s
     @surrounding_cells
   end
 
-  # def finish_him
-  #   identify_hit_cells
-  # end
-  #
-  # def identify_hit_cells
-  #   @hit_cells = @player_board.cells.find do |name, cell|
-  #     cell.render == "H"
-  #   end
-  # end
-  #
-  # def adjacent_vertical?
-  #   hit_cell_row = @hit_cells.map do |cell|
-  #     cell[0]
-  #   end
-  # end
+  def same_column?
+    # require 'pry'; binding.pry
+    hit_cell_column = @hit_cells.map do |name, cell|
+      name[1]
+    end
+    hit_cell_column.uniq.count == 1
+  end
 
-  def adjacent_horizontal?
+  def map_column_ends
+    hit_cell_names = @hit_cells.map do |name, cell|
+      name
+    end
+    hit_cell_names.sort
+    @surrounding_cells = []
+    @surrounding_cells << (hit_cell_names[0][0].ord - 1).chr + hit_cell_names[0][1]
+    @surrounding_cells << (hit_cell_names[-1][0].ord + 1).chr + hit_cell_names[-1][1]
+    @surrounding_cells
+  end
 
+  def map_surrounding_cells_multiple_cells
+    @surrounding_cells = []
+    @hit_cells.each do |hit_cell|
+      split_hit_cell = hit_cell[0].split("")
+      @surrounding_cells << split_hit_cell[0] + (split_hit_cell[1].to_i - 1).to_s
+      @surrounding_cells << split_hit_cell[0] + (split_hit_cell[1].to_i + 1).to_s
+      @surrounding_cells << (split_hit_cell[0].ord - 1).chr + split_hit_cell[1]
+      @surrounding_cells << (split_hit_cell[0].ord + 1).chr + split_hit_cell[1]
+    end
   end
 
   def stringify_player_results
