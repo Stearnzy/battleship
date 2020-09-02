@@ -1,5 +1,5 @@
 class GameSetup
-  attr_reader :cell_names, :height, :width, :computer_cruiser, :computer_submarine, :player_cruiser, :player_submarine, :computer_board, :player_board
+  attr_reader :cell_names, :height, :width, :computer_board, :player_board
   def initialize
   end
 
@@ -10,6 +10,7 @@ class GameSetup
 
   def setup
     board_size_prompt
+    generate_cell_names
     create_boards
   end
 
@@ -19,6 +20,7 @@ class GameSetup
     player_cruiser_placement_prompt
     player_cruiser_validation_check
     player_place_cruiser
+    render_player_board
     player_submarine_placement_prompt
     player_submarine_validation_check
     player_place_submarine
@@ -65,7 +67,7 @@ class GameSetup
         print "> "
         loop do
           @height = gets.chomp.to_i
-          if (1..9).to_a.include? @height
+          if valid_height?(@height)
             break
           else
             puts "Sorry, #{@height} is not a valid height. Please input 1 - 9."
@@ -76,10 +78,10 @@ class GameSetup
         print "> "
         loop do
           @width = gets.chomp.to_i
-          if (1..9).to_a.include? @width
+          if valid_width?(@width)
             break
           else
-            puts "Sorry, #{@height} is not a valid height. Please input 1 - 9."
+            puts "Sorry, #{@width} is not a valid width. Please input 1 - 9."
             print "> "
           end
         end
@@ -90,9 +92,20 @@ class GameSetup
              "Type 'y' for 4 x 4 board, or 'n' to pick a different size."
       end
     end
-      board_specs = CellGenerator.new(@height, @width)
-      board_specs.populate_cell_names
-      @cell_names = board_specs.cell_names
+  end
+
+  def valid_height?(height)
+    (1..9).to_a.include? height
+  end
+
+  def valid_width?(width)
+    (1..9).to_a.include? width
+  end
+
+  def generate_cell_names
+    board_specs = CellGenerator.new(@height, @width)
+    board_specs.populate_cell_names
+    @cell_names = board_specs.cell_names
   end
 
   def create_boards
@@ -104,20 +117,28 @@ class GameSetup
     @comp_cruiser = Ship.new("Cruiser", 3)
     @comp_submarine = Ship.new("Submarine", 2)
     loop do
-      comp_cells = @cell_names.shuffle[0..2]
-      if @computer_board.valid_placement?(@comp_cruiser, comp_cells) == true
-        @computer_board.place(@comp_cruiser, comp_cells)
+      randomize_computer_cruiser_cells(@cell_names)
+      if @computer_board.valid_placement?(@comp_cruiser, @comp_cruiser_cells) == true
+        @computer_board.place(@comp_cruiser, @comp_cruiser_cells)
         break
       end
     end
 
     loop do
-      comp_cells = @cell_names.shuffle[0..1]
-      if @computer_board.valid_placement?(@comp_submarine, comp_cells) == true
-        @computer_board.place(@comp_submarine, comp_cells)
+      randomize_computer_sub_cells(@cell_names)
+      if @computer_board.valid_placement?(@comp_submarine, @comp_sub_cells) == true
+        @computer_board.place(@comp_submarine, @comp_sub_cells)
         break
       end
     end
+  end
+
+  def randomize_computer_cruiser_cells(cell_names)
+    @comp_cruiser_cells = cell_names.shuffle[0..2]
+  end
+
+  def randomize_computer_sub_cells(cell_names)
+    @comp_sub_cells = cell_names.shuffle[0..1]
   end
 
   def player_ship_placement_prompt
@@ -147,7 +168,6 @@ class GameSetup
 
   def player_place_cruiser
     @player_board.place(@cruiser, @cruiser_placement)
-    render_player_board
   end
 
   def player_submarine_placement_prompt
@@ -170,7 +190,6 @@ class GameSetup
 
   def player_place_submarine
     @player_board.place(@submarine, @submarine_placement)
-    render_player_board
   end
 
   def render_player_board
