@@ -143,7 +143,6 @@ class GamePlay
         @surrounding_cells.delete(cell)
       end
     end
-    @surrounding_cells = @surrounding_cells.uniq
   end
 
   def targeted_fire
@@ -232,6 +231,7 @@ class GamePlay
       @surrounding_cells << (split_hit_cell[0].ord - 1).chr + split_hit_cell[1]
       @surrounding_cells << (split_hit_cell[0].ord + 1).chr + split_hit_cell[1]
     end
+    @surrounding_cells = @surrounding_cells.uniq
   end
 
   def stringify_player_results
