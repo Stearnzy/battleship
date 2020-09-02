@@ -94,12 +94,21 @@ class GamePlay
   end
 
   def turn_computer_shot
-    loop do
-      @computer_shot = @cell_names.shuffle[0]
-      if @player_board.cells[@computer_shot].fired_upon? == false
-        @player_board.cells[@computer_shot].fire_upon
-        break
+    if !@player_board.render(true).include? "H"
+      # HUNT - random
+      loop do
+        @computer_shot = @cell_names.shuffle[0]
+        if @player_board.cells[@computer_shot].fired_upon? == false
+          @player_board.cells[@computer_shot].fire_upon
+          break
+        end
       end
+    else
+      # TARGET - ONE HIT CELL
+      if @playerboard.render(true).count("X") == 1
+        #target
+      else # MORE THAN ONE "H"
+        #target
     end
   end
 
