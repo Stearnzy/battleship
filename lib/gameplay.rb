@@ -95,21 +95,72 @@ class GamePlay
 
   def turn_computer_shot
     if !@player_board.render(true).include? "H"
-      # HUNT - random
-      loop do
-        @computer_shot = @cell_names.shuffle[0]
-        if @player_board.cells[@computer_shot].fired_upon? == false
-          @player_board.cells[@computer_shot].fire_upon
-          break
-        end
-      end
-    else
-      # TARGET - ONE HIT CELL
-      if @playerboard.render(true).count("X") == 1
-        #target
-      else # MORE THAN ONE "H"
-        #target
+      hunt
+    elsif @player_board.render(true).count("H") == 1
+      target
+    else # MORE THAN ONE "H"
+      finish_him
     end
+  end
+
+  def hunt
+    loop do
+      @computer_shot = @cell_names.shuffle[0]
+      if @player_board.cells[@computer_shot].fired_upon? == false
+        @player_board.cells[@computer_shot].fire_upon
+        break
+      end
+    end
+  end
+
+  def target
+    identify_hit_cell
+    map_surrounding_cells
+    @computer_shot = @surrounding_cells.shuffle[0]
+    @player_board.cells[@computer_shot].fire_upon
+  end
+
+  def identify_hit_cell
+    @hit_cell = @player_board.cells.find do |name, cell|
+      cell.render == "H"
+    end
+  end
+
+  def map_surrounding_cells
+    @surrounding_cells = []
+    split_hit_cell = @hit_cell[0].split("")
+    @surrounding_cells << split_hit_cell[0] + (split_hit_cell[1].to_i - 1).to_s
+    @surrounding_cells << split_hit_cell[0] + (split_hit_cell[1].to_i + 1).to_s
+    @surrounding_cells << (split_hit_cell[0].ord - 1).chr + split_hit_cell[1]
+    @surrounding_cells << (split_hit_cell[0].ord + 1).chr + split_hit_cell[1]
+    @surrounding_cells.each do |cell|
+      if !player_board.cell_names.include? cell
+        @surrounding_cells.delete(cell)
+      elsif player_board.cells[cell].fired_upon?
+        @surrounding_cells.delete(cell)
+      end
+    end
+    @surrounding_cells
+  end
+
+  # def finish_him
+  #   identify_hit_cells
+  # end
+  #
+  # def identify_hit_cells
+  #   @hit_cells = @player_board.cells.find do |name, cell|
+  #     cell.render == "H"
+  #   end
+  # end
+  #
+  # def adjacent_vertical?
+  #   hit_cell_row = @hit_cells.map do |cell|
+  #     cell[0]
+  #   end
+  # end
+
+  def adjacent_horizontal?
+
   end
 
   def stringify_player_results
