@@ -9,7 +9,6 @@ require './lib/gameplay'
 
 class GamePlayTest < Minitest::Test
   def test_it_exists
-    skip
     cell_names = ["A1"]
     player_board = Board.new(cell_names, 1, 1)
     computer_board = Board.new(cell_names, 1, 1)
@@ -19,7 +18,6 @@ class GamePlayTest < Minitest::Test
   end
 
   def test_game_goes_on_or_not
-    skip
     cell_names = ["A1", "A2"]
     player_board = Board.new(cell_names, 1, 2)
     computer_board = Board.new(cell_names, 1, 2)
@@ -87,6 +85,7 @@ class GamePlayTest < Minitest::Test
   end
 
   def test_it_can_identify_hit_cell
+    skip
     generator = CellGenerator.new
     generator.populate_cell_names
     cell_names = generator.cell_names
@@ -102,6 +101,7 @@ class GamePlayTest < Minitest::Test
   end
 
   def test_it_can_map_surrounding_cells
+    skip
     generator = CellGenerator.new
     generator.populate_cell_names
     cell_names = generator.cell_names
@@ -118,6 +118,7 @@ class GamePlayTest < Minitest::Test
   end
 
   def test_it_shoots_surrounding_cells_in_target_mode
+    skip
     100.times do
       generator = CellGenerator.new
       generator.populate_cell_names
@@ -140,6 +141,7 @@ class GamePlayTest < Minitest::Test
   end
 
   def test_it_can_identify_hit_cells
+    skip
     generator = CellGenerator.new
     generator.populate_cell_names
     cell_names = generator.cell_names
@@ -150,12 +152,16 @@ class GamePlayTest < Minitest::Test
     gameplay = GamePlay.new(cell_names, computer_board, player_board)
 
     gameplay.player_board.cells["A4"].fire_upon
+
+    assert ["A4"], gameplay.identify_hit_cell
+
     gameplay.player_board.cells["B4"].fire_upon
 
-    assert ["A4", "B4"], gameplay.identify_hit_cell
+    assert ["A4", "B4"], gameplay.identify_hit_cells
   end
 
   def test_it_check_if_cells_are_in_the_same_column
+    skip
     generator = CellGenerator.new
     generator.populate_cell_names
     cell_names = generator.cell_names
@@ -173,7 +179,7 @@ class GamePlayTest < Minitest::Test
 
   end
 
-  def test_it_can_check_if_cells_are_in_the_same_row
+  def test_it_can_check_if_cells_are_in_the_same_column
     generator = CellGenerator.new
     generator.populate_cell_names
     cell_names = generator.cell_names
@@ -188,5 +194,85 @@ class GamePlayTest < Minitest::Test
     gameplay.identify_hit_cells
 
     assert true, gameplay.same_column?
+  end
+
+  def test_it_can_check_if_cells_are_in_the_same_row
+    skip
+    generator = CellGenerator.new
+    generator.populate_cell_names
+    cell_names = generator.cell_names
+    player_cruiser = Ship.new("Cruiser", 3)
+    player_board = Board.new(cell_names)
+    computer_board = Board.new(cell_names)
+    player_board.place(player_cruiser, ["A2", "A3", "A4"])
+    gameplay = GamePlay.new(cell_names, computer_board, player_board)
+
+    gameplay.player_board.cells["A2"].fire_upon
+    gameplay.player_board.cells["A3"].fire_upon
+    gameplay.identify_hit_cells
+
+    assert true, gameplay.same_row?
+  end
+
+  def test_it_removes_invalid_surrounding_cells_corner
+    skip
+    generator = CellGenerator.new
+    generator.populate_cell_names
+    cell_names = generator.cell_names
+    player_cruiser = Ship.new("Cruiser", 3)
+    player_board = Board.new(cell_names)
+    computer_board = Board.new(cell_names)
+    player_board.place(player_cruiser, ["D2", "D3", "D4"])
+    gameplay = GamePlay.new(cell_names, computer_board, player_board)
+
+    gameplay.player_board.cells["D4"].fire_upon
+    gameplay.identify_hit_cell
+    gameplay.map_surrounding_cells
+
+    assert_equal ["D3", "C4"], gameplay.remove_invalid_surrounding_cells
+  end
+
+  def test_it_removes_invalid_surrounding_cells_rows
+    skip
+    generator = CellGenerator.new
+    generator.populate_cell_names
+    cell_names = generator.cell_names
+    player_cruiser = Ship.new("Cruiser", 3)
+    player_board = Board.new(cell_names)
+    computer_board = Board.new(cell_names)
+    player_board.place(player_cruiser, ["D2", "D3", "D4"])
+    gameplay = GamePlay.new(cell_names, computer_board, player_board)
+
+    gameplay.player_board.cells["D2"].fire_upon
+    gameplay.player_board.cells["D3"].fire_upon
+
+    assert true, gameplay.player_board.render.count("H") > 1
+
+    gameplay.identify_hit_cells
+    gameplay.map_row_ends
+
+    assert_equal ["D1", "D4"], gameplay.remove_invalid_surrounding_cells
+  end
+
+  def test_it_removes_invalid_surrounding_cells_column
+    skip
+    generator = CellGenerator.new
+    generator.populate_cell_names
+    cell_names = generator.cell_names
+    player_cruiser = Ship.new("Cruiser", 3)
+    player_board = Board.new(cell_names)
+    computer_board = Board.new(cell_names)
+    player_board.place(player_cruiser, ["A2", "B2", "C2"])
+    gameplay = GamePlay.new(cell_names, computer_board, player_board)
+
+    gameplay.player_board.cells["B2"].fire_upon
+    gameplay.player_board.cells["C2"].fire_upon
+
+    assert true, gameplay.player_board.render.count("H") > 1
+
+    gameplay.identify_hit_cells
+    gameplay.map_column_ends
+
+    assert_equal ["A2", "D2"], gameplay.remove_invalid_surrounding_cells
   end
 end
