@@ -98,7 +98,7 @@ class GamePlay
       hunt
     elsif @player_board.render.count("H") == 1
       target
-    else # MORE THAN ONE "H"
+    else
       finish_him
     end
   end
@@ -106,7 +106,7 @@ class GamePlay
   def hunt
     loop do
       @computer_shot = @cell_names.shuffle[0]
-      if @player_board.cells[@computer_shot].fired_upon? == false
+      if (@player_board.cells[@computer_shot]).fired_upon? == false
         @player_board.cells[@computer_shot].fire_upon
         break
       end
@@ -136,17 +136,16 @@ class GamePlay
   end
 
   def remove_invalid_surrounding_cells
-    @surrounding_cells.each do |cell|
-      if !player_board.cell_names.include? cell
-        @surrounding_cells.delete(cell)
-      elsif player_board.cells[cell].fired_upon?
-        @surrounding_cells.delete(cell)
-      end
+    board_applicable = @surrounding_cells.find_all do |cell|
+      @player_board.cell_names.include? cell
+    end
+    @fireable = board_applicable.find_all do |cell|
+      !@player_board.cells[cell].fired_upon?
     end
   end
 
   def targeted_fire
-    @computer_shot = @surrounding_cells.shuffle[0]
+    @computer_shot = @fireable.shuffle[0]
     @player_board.cells[@computer_shot].fire_upon
   end
 
@@ -155,7 +154,7 @@ class GamePlay
     if same_row?
       map_row_ends
       remove_invalid_surrounding_cells
-      if @surrounding_cells == []
+      if @fireable == []
         map_surrounding_cells_multiple_cells
         remove_invalid_surrounding_cells
         targeted_fire
@@ -165,7 +164,7 @@ class GamePlay
     elsif same_column?
       map_column_ends
       remove_invalid_surrounding_cells
-      if @surrounding_cells == []
+      if @fireable == []
         map_surrounding_cells_multiple_cells
         remove_invalid_surrounding_cells
         targeted_fire
@@ -204,7 +203,6 @@ class GamePlay
   end
 
   def same_column?
-    # require 'pry'; binding.pry
     hit_cell_column = @hit_cells.map do |name, cell|
       name[1]
     end
