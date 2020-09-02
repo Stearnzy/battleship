@@ -30,22 +30,22 @@ class Cell
   def render(player_board = false)
     if fired_upon?
       if empty?
-        cell_status = "M"
+        @cell_status = "M"
       elsif ship.sunk?
-        cell_status = "X"
+        @cell_status = "X"
       else
-        cell_status = "H"
+        @cell_status = "H"
       end
     else
       if empty?
-        cell_status = "."
+        @cell_status = "."
       else
         if player_board == true
-          cell_status = "S"
+          @cell_status = "S"
         elsif player_board == true && ship.sunk? == true
-          cell_status = "X"
+          @cell_status = "X"
         else
-          cell_status = "."
+          @cell_status = "."
         end
       end
     end
